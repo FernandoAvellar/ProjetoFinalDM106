@@ -17,12 +17,14 @@ namespace ProjetoFinalDM106.Controllers
         private ProjetoFinalDM106Context db = new ProjetoFinalDM106Context();
 
         // GET: api/Products
+        [Authorize]
         public IQueryable<Product> GetProducts()
         {
             return db.Products;
         }
 
         // GET: api/Products/5
+        [Authorize]
         [ResponseType(typeof(Product))]
         public IHttpActionResult GetProduct(int id)
         {
@@ -36,6 +38,7 @@ namespace ProjetoFinalDM106.Controllers
         }
 
         // PUT: api/Products/5
+        [Authorize(Roles = "ADMIN")]
         [ResponseType(typeof(void))]
         public IHttpActionResult PutProduct(int id, Product product)
         {
@@ -47,6 +50,11 @@ namespace ProjetoFinalDM106.Controllers
             if (id != product.Id)
             {
                 return BadRequest();
+            }
+
+            if (ModeloOuCodigoJaPresenteNaTabela(product, true))
+            {
+                return BadRequest("Modelo e/ou Codigo já presente na tabela!");
             }
 
             db.Entry(product).State = EntityState.Modified;
@@ -71,12 +79,18 @@ namespace ProjetoFinalDM106.Controllers
         }
 
         // POST: api/Products
+        [Authorize(Roles = "ADMIN")]
         [ResponseType(typeof(Product))]
         public IHttpActionResult PostProduct(Product product)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
+            }
+
+            if (ModeloOuCodigoJaPresenteNaTabela(product, false))
+            {
+                return BadRequest("Modelo e/ou Codigo já presente na tabela!");
             }
 
             db.Products.Add(product);
@@ -86,6 +100,7 @@ namespace ProjetoFinalDM106.Controllers
         }
 
         // DELETE: api/Products/5
+        [Authorize(Roles = "ADMIN")]
         [ResponseType(typeof(Product))]
         public IHttpActionResult DeleteProduct(int id)
         {
@@ -113,6 +128,16 @@ namespace ProjetoFinalDM106.Controllers
         private bool ProductExists(int id)
         {
             return db.Products.Count(e => e.Id == id) > 0;
+        }
+
+        private bool ModeloOuCodigoJaPresenteNaTabela(Product product, Boolean isPutOperation)
+        {
+            if (isPutOperation)
+            {
+                return (db.Products.Count(p => p.modelo.Equals(product.modelo)) > 1) || (db.Products.Count(p => p.codigo.Equals(product.codigo)) > 1);
+            }
+
+            return (db.Products.Count(p => p.modelo.Equals(product.modelo)) > 0) || (db.Products.Count(p => p.codigo.Equals(product.codigo)) > 0);
         }
     }
 }

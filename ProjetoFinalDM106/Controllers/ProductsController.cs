@@ -134,7 +134,7 @@ namespace ProjetoFinalDM106.Controllers
         {
             if (isPutOperation)
             {
-                return (db.Products.Count(p => p.modelo.Equals(product.modelo)) > 1) || (db.Products.Count(p => p.codigo.Equals(product.codigo)) > 1);
+                return (db.Products.Count(p => p.modelo.Equals(product.modelo)) == 1) || (db.Products.Count(p => p.codigo.Equals(product.codigo)) == 1);
             }
 
             return (db.Products.Count(p => p.modelo.Equals(product.modelo)) > 0) || (db.Products.Count(p => p.codigo.Equals(product.codigo)) > 0);

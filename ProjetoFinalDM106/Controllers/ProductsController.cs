@@ -54,7 +54,7 @@ namespace ProjetoFinalDM106.Controllers
 
             if (ModeloOuCodigoJaPresenteNaTabela(product, true))
             {
-                return BadRequest("Modelo e/ou Codigo já presente na tabela!");
+                return BadRequest("Modelo e/ou codigo já presente na tabela!");
             }
 
             db.Entry(product).State = EntityState.Modified;
@@ -90,7 +90,7 @@ namespace ProjetoFinalDM106.Controllers
 
             if (ModeloOuCodigoJaPresenteNaTabela(product, false))
             {
-                return BadRequest("Modelo e/ou Codigo já presente na tabela!");
+                return BadRequest("Modelo e/ou codigo já presente na tabela!");
             }
 
             db.Products.Add(product);

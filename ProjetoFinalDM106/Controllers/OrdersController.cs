@@ -58,6 +58,7 @@ namespace ProjetoFinalDM106.Controllers
             return CreatedAtRoute("DefaultApi", new { id = order.Id }, order);
         }
 
+        // GET: api/Orders/byemail?email={email}
         [ResponseType(typeof(Order))]
         [HttpGet]
         [Route("byemail")]
@@ -77,6 +78,35 @@ namespace ProjetoFinalDM106.Controllers
             return Ok(order);
         }
 
+        // POST: api/Orders/{orderId}/close
+        [ResponseType(typeof(Order))]
+        [HttpPost]
+        [Route("{id}/close")]
+        public IHttpActionResult CloseProductById(int id)
+        {
+            Order order = db.Orders.Find(id);
+            if (order == null)
+            {
+                return NotFound();
+            }
+
+            if (!User.IsInRole("ADMIN") && !User.Identity.Name.Equals(order.userName))
+            {
+                return StatusCode(HttpStatusCode.Forbidden);
+            }
+
+            if(order.precoFrete == 0)
+            {
+                return StatusCode(HttpStatusCode.MethodNotAllowed);
+            }                
+
+            order.status = "fechado";
+            db.Entry(order).State = EntityState.Modified;
+            db.SaveChanges();
+
+            return Ok(order);
+        }
+
 
         // DELETE: api/Orders/5
         [ResponseType(typeof(Order))]
@@ -86,6 +116,11 @@ namespace ProjetoFinalDM106.Controllers
             if (order == null)
             {
                 return NotFound();
+            }
+
+            if (!User.IsInRole("ADMIN") && !User.Identity.Name.Equals(order.userName))
+            {
+                return StatusCode(HttpStatusCode.Forbidden);
             }
 
             db.Orders.Remove(order);

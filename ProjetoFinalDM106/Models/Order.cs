@@ -11,6 +11,12 @@ namespace ProjetoFinalDM106.Models
         public Order()
         {
             this.OrderItems = new HashSet<OrderItem>();
+            this.orderDate = DateTime.Now;
+            this.deliveryDate = DateTime.Now;
+            this.status = "novo";
+            this.pesoTotal = 0;
+            this.precoFrete = 0;
+            this.precoTotal = 0;
         }
 
         public int Id { get; set; }
@@ -21,7 +27,7 @@ namespace ProjetoFinalDM106.Models
 
         public DateTime deliveryDate { get; set; }
 
-        public enum status { novo, fechado, cancelado, entregue };
+        public string status { get; set; }
 
         public decimal precoTotal { get; set; }
 

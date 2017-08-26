@@ -5,14 +5,15 @@ namespace ProjetoFinalDM106.Migrations
     using System.Data.Entity.Migrations;
     using System.Linq;
 
-    internal sealed class Configuration : DbMigrationsConfiguration<ProjetoFinalDM106.Models.ProjetoFinalDM106Context>
+    internal sealed class Configuration : DbMigrationsConfiguration<ProjetoFinalDM106.Models.ApplicationDbContext>
     {
         public Configuration()
         {
             AutomaticMigrationsEnabled = false;
+            ContextKey = "ProjetoFinalDM106.Models.ApplicationDbContext";
         }
 
-        protected override void Seed(ProjetoFinalDM106.Models.ProjetoFinalDM106Context context)
+        protected override void Seed(ProjetoFinalDM106.Models.ApplicationDbContext context)
         {
             //  This method will be called after migrating to the latest version.
 

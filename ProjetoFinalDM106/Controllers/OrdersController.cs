@@ -12,6 +12,8 @@ using ProjetoFinalDM106.Models;
 
 namespace ProjetoFinalDM106.Controllers
 {
+    [Authorize]
+    [RoutePrefix("api/Orders")]
     public class OrdersController : ApiController
     {
         private ProjetoFinalDM106Context db = new ProjetoFinalDM106Context();
@@ -33,42 +35,12 @@ namespace ProjetoFinalDM106.Controllers
                 return NotFound();
             }
 
+            if (!User.IsInRole("ADMIN") && !User.Identity.Name.Equals(order.userName))
+            {
+                return StatusCode(HttpStatusCode.Forbidden);
+            }
+
             return Ok(order);
-        }
-
-        // PUT: api/Orders/5
-        [ResponseType(typeof(void))]
-        public IHttpActionResult PutOrder(int id, Order order)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            if (id != order.Id)
-            {
-                return BadRequest();
-            }
-
-            db.Entry(order).State = EntityState.Modified;
-
-            try
-            {
-                db.SaveChanges();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!OrderExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return StatusCode(HttpStatusCode.NoContent);
         }
 
         // POST: api/Orders
@@ -85,6 +57,26 @@ namespace ProjetoFinalDM106.Controllers
 
             return CreatedAtRoute("DefaultApi", new { id = order.Id }, order);
         }
+
+        [ResponseType(typeof(Order))]
+        [HttpGet]
+        [Route("byemail")]
+        public IHttpActionResult GetOrderByEmail(string email)
+        {
+            var order = db.Orders.Where(o => o.userName == email);
+            if (order == null)
+            {
+                return NotFound();
+            }
+
+            if (!User.IsInRole("ADMIN") && !User.Identity.Name.Equals(email))
+            {
+                return StatusCode(HttpStatusCode.Forbidden);
+            }
+
+            return Ok(order);
+        }
+
 
         // DELETE: api/Orders/5
         [ResponseType(typeof(Order))]

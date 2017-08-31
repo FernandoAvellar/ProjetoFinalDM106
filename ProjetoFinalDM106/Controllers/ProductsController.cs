@@ -9,6 +9,7 @@ using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Description;
 using ProjetoFinalDM106.Models;
+using System.Diagnostics;
 
 namespace ProjetoFinalDM106.Controllers
 {
@@ -134,7 +135,13 @@ namespace ProjetoFinalDM106.Controllers
         {
             if (isPutOperation)
             {
-                return (db.Products.Count(p => p.modelo.Equals(product.modelo)) == 1) || (db.Products.Count(p => p.codigo.Equals(product.codigo)) == 1);
+                //Criando uma nova tabela excluindo o produto a ser modificado
+
+                var productsFiltered =  from Product in db.Products
+                                        where Product.Id != product.Id
+                                        select Product;
+
+                return (productsFiltered.Count(p => p.modelo.Equals(product.modelo)) > 0) || (productsFiltered.Count(p => p.codigo.Equals(product.codigo)) > 0);
             }
 
             return (db.Products.Count(p => p.modelo.Equals(product.modelo)) > 0) || (db.Products.Count(p => p.codigo.Equals(product.codigo)) > 0);

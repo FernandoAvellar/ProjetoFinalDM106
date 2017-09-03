@@ -11,6 +11,7 @@ using System.Web.Http.Description;
 using ProjetoFinalDM106.Models;
 using ProjetoFinalDM106.br.com.correios.ws;
 using ProjetoFinalDM106.CRMClient;
+using System.Globalization;
 
 namespace ProjetoFinalDM106.Controllers
 {
@@ -173,9 +174,8 @@ namespace ProjetoFinalDM106.Controllers
                 return BadRequest("Falha na consulta aos Correios - Código do erro: " + resultadoCorreios.Servicos[0].Erro + "- Mensagem: " + resultadoCorreios.Servicos[0].MsgErro);
             }
 
-            order.precoFrete = Convert.ToDecimal(frete);
+            order.precoFrete = Convert.ToDecimal(frete, new CultureInfo("pt-BR"));
             order.precoTotal = calculaPrecoOrdem(order) + order.precoFrete;
-            //order.deliveryDate = order.orderDate.Add(new TimeSpan(Convert.ToInt32(prazoEntrega)));
             order.deliveryDate = order.orderDate.AddDays(Convert.ToDouble(prazoEntrega));
 
             db.Entry(order).State = EntityState.Modified;

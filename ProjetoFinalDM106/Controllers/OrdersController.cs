@@ -23,9 +23,9 @@ namespace ProjetoFinalDM106.Controllers
 
         // GET: api/Orders
         [Authorize(Roles = "ADMIN")]
-        public IQueryable<Order> GetOrders()
+        public List<Order> GetOrders()
         {
-            return db.Orders;
+            return db.Orders.Include(order => order.OrderItems).ToList();
         }
 
         // GET: api/Orders/5
@@ -67,7 +67,7 @@ namespace ProjetoFinalDM106.Controllers
         [Route("byemail")]
         public IHttpActionResult GetOrderByEmail(string email)
         {
-            var order = db.Orders.Where(o => o.userName == email);
+            var order = db.Orders.Where(o => o.userName == email).ToList();
             if (order == null)
             {
                 return NotFound();
